@@ -28,8 +28,8 @@ import (
 )
 
 var (
-	BuildVersion = "0.1.0"
-	BuildRelease = "0000000000"
+	BuildVersion = "0.2.0"
+	BuildRelease = "trunk"
 )
 
 var gBaseName string
