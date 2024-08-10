@@ -23,6 +23,8 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"github.com/urfave/cli/v2"
+
+	clcli "github.com/go-corelibs/cli"
 )
 
 var (
@@ -34,14 +36,45 @@ var gBaseName string
 
 func init() {
 	gBaseName = filepath.Base(os.Args[0])
+
+	cli.HelpFlag = &cli.BoolFlag{
+		Category: "General",
+		Name:     "help",
+		Aliases:  []string{"h", "usage"},
+	}
+
+	cli.VersionFlag = &cli.BoolFlag{
+		Category: "General",
+		Name:     "version",
+		Aliases:  []string{"V"},
+	}
+
+	cli.FlagStringer = clcli.NewFlagStringer().
+		PruneDefaultBools(true).
+		DetailsOnNewLines(true).
+		Make()
 }
+
+var (
+	gModeInfo = map[string]struct {
+		fn      func(input string) (output string)
+		example string
+	}{
+		"camel":           {fn: strcase.ToCamel, example: "CamelCase"},
+		"lower-camel":     {fn: strcase.ToLowerCamel, example: "lowerCamelCase"},
+		"kebab":           {fn: strcase.ToKebab, example: "kebab-case"},
+		"screaming-kebab": {fn: strcase.ToScreamingKebab, example: "SCREAMING-KEBAB-CASE"},
+		"snake":           {fn: strcase.ToSnake, example: "snake_case"},
+		"screaming-snake": {fn: strcase.ToScreamingSnake, example: "SCREAMING_SNAKE_CASE"},
+	}
+)
 
 func main() {
 
 	var err error
 	var cliFlags []cli.Flag
 	var fn func(string) string
-	var usage, usageText, example, description string
+	var name, usage, usageText, description string
 
 	checkName := gBaseName
 	for _, prefix := range []string{"strcaseto-", "strto-", "to-"} {
@@ -50,69 +83,43 @@ func main() {
 			break
 		}
 	}
-	if strings.HasSuffix(checkName, "-case") {
-		checkName = checkName[0 : len(checkName)-5]
-	}
+	checkName = strings.TrimSuffix(checkName, "-case")
 
-	switch checkName {
-	case "screaming-kebab":
-		fn = strcase.ToScreamingKebab
-		example = "SCREAMING-KEBAB-CASE"
-	case "screaming-snake":
-		fn = strcase.ToScreamingSnake
-		example = "SCREAMING_SNAKE_CASE"
-	case "lower-camel":
-		fn = strcase.ToLowerCamel
-		example = "lowerCamelCase"
-	case "camel":
-		fn = strcase.ToCamel
-		example = "CamelCase"
-	case "kebab":
-		fn = strcase.ToKebab
-		example = "kebab-case"
-	case "snake":
-		fn = strcase.ToSnake
-		example = "snake_case"
-	default:
-		usage = "convert strings to various cases"
-		usageText = gBaseName + " [option] <string> [string...]\necho \"one-or-more-lines\" | " + gBaseName + " [option]"
-		description = "Convert command line arguments (or lines of os.Stdin) to a specific case.\nOutputting one line of text per input given."
-		cliFlags = append(cliFlags,
-			&cli.BoolFlag{Category: "Cases", Name: "camel"},
-			&cli.BoolFlag{Category: "Cases", Name: "kebab"},
-			&cli.BoolFlag{Category: "Cases", Name: "snake"},
-			&cli.BoolFlag{Category: "Cases", Name: "lower-camel"},
-			&cli.BoolFlag{Category: "Cases", Name: "screaming-kebab"},
-			&cli.BoolFlag{Category: "Cases", Name: "screaming-snake"},
-		)
-	}
+	if info, ok := gModeInfo[checkName]; ok {
 
-	if example != "" {
-		usage = "convert strings to " + example
-		usageText = gBaseName + " <string> [string...]\necho \"one-or-more-lines\" | " + gBaseName
-		description = "Convert command line arguments (or lines of os.Stdin) to " + example + ".\nOutputting one line of text per input given."
-	}
-
-	cli.HelpFlag = &cli.BoolFlag{
-		Category: "General",
-		Name:     "help",
-		Aliases:  []string{"h", "usage"},
-	}
-	cli.VersionFlag = &cli.BoolFlag{
-		Category: "General",
-		Name:     "version",
-		Aliases:  []string{"V"},
-	}
-
-	if usageText == "" {
-		usageText = gBaseName + " <string> [string...]"
-	}
-
-	var name string
-	if fn == nil {
-		name = "strcaseto"
-	} else {
+		// program is symlinked to a specific strcase
 		name = gBaseName + " (strcaseto)"
+		fn = info.fn
+		usage = "convert strings to " + info.example
+		usageText = gBaseName +
+			" <string> [string...]\n" +
+			"echo \"one-or-more-lines\" | " +
+			gBaseName
+		description = "" +
+			"Convert command line arguments (or lines of os.Stdin) to " + info.example + ".\n" +
+			"Outputting one line of text per input given."
+
+	} else {
+
+		// program is used directly, allow all strcases
+		name = "strcaseto"
+		usage = "convert strings to various cases"
+		usageText = gBaseName +
+			" [option] <string> [string...]\n" +
+			"echo \"one-or-more-lines\" | " +
+			gBaseName +
+			" [option]"
+		description = "" +
+			"Convert command line arguments (or lines of os.Stdin) to a specific case.\n" +
+			"Outputting one line of text per input given."
+		cliFlags = append(cliFlags,
+			&cli.BoolFlag{Category: "Cases", Name: "camel", Aliases: []string{"c"}},
+			&cli.BoolFlag{Category: "Cases", Name: "lower-camel", Aliases: []string{"C"}},
+			&cli.BoolFlag{Category: "Cases", Name: "kebab", Aliases: []string{"k"}},
+			&cli.BoolFlag{Category: "Cases", Name: "screaming-kebab", Aliases: []string{"K"}},
+			&cli.BoolFlag{Category: "Cases", Name: "snake", Aliases: []string{"s"}},
+			&cli.BoolFlag{Category: "Cases", Name: "screaming-snake", Aliases: []string{"S"}},
+		)
 	}
 
 	app := &cli.App{
