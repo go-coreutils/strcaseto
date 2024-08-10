@@ -72,7 +72,7 @@ THAT-STRING
 ## LICENSE
 
 ```
-Copyright 2023  The Go-Curses Authors
+Copyright 2024  The Go-CoreUtils Authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use file except in compliance with the License.
