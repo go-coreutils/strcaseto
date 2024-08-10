@@ -1,3 +1,7 @@
+[![Go](https://img.shields.io/badge/Go-v1.22.6-blue.svg)](https://go.dev)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](https://pkg.go.dev/github.com/go-coreutils/strcaseto)
+[![GoReportCard](https://goreportcard.com/badge/github.com/go-coreutils/strcaseto)](https://goreportcard.com/report/github.com/go-coreutils/strcaseto)
+
 # strcaseto
 
 Utility for converting strings to specific cases such as `CamelCase`,
