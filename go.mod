@@ -1,6 +1,6 @@
 module github.com/go-coreutils/strcaseto
 
-go 1.20
+go 1.22.6
 
 require (
 	github.com/iancoleman/strcase v0.2.0
