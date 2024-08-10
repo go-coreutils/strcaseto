@@ -5,7 +5,7 @@ Utility for converting strings to specific cases such as CamelCase, kebab-case o
 ## INSTALLATION
 
 ``` shell
-> go install github.com/go-curses/coreutils-strcaseto/cmd/strcaseto@latest
+> go install github.com/go-coreutils/strcase/cmd/strcaseto@latest
 ```
 
 ## DOCUMENTATION

@@ -1,4 +1,4 @@
-module github.com/go-curses/coreutils-strcaseto
+module github.com/go-coreutils/strcaseto
 
 go 1.20
 
