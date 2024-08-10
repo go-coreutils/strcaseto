@@ -15,14 +15,15 @@
 # limitations under the License.
 
 GOLANG_MAKEFILE_KEYS += DEF
-GOLANG_DEF_MK_VERSION := v0.1.1
+GOLANG_DEF_MK_VERSION := v0.1.3
 
 .PHONY: all help
 .PHONY: clean distclean realclean
-.PHONY: local unlocal tidy be-update generate
+.PHONY: local unlocal deps tidy fmt be-update generate
 .PHONY: debug build build-all build-amd64 build-arm64
 .PHONY: release release-all release-amd64 release-arm64
 .PHONY: install install-autocomplete
+.PHONY: test coverage reportcard
 
 SRC_CMD_PATH ?= .
 SRC_AUTOCOMPLETE_FILE ?= ./bash_autocomplete
@@ -33,10 +34,10 @@ all: help
 help:
 	@echo "usage: make [target]"
 	@echo
-	@echo "qa targets:"
-	@echo "  vet         - run go vet command"
-	@echo "  test        - perform all available tests"
-	@echo "  cover       - perform all available tests with coverage report"
+	@echo "golang qa targets:"
+	@echo "  test           - perform all available tests"
+	@echo "  coverage       - generate coverage reports"
+	@echo "  reportcard     - run sanity checks"
 
 	@echo
 	@echo "cleanup targets:"
@@ -78,6 +79,9 @@ $(foreach key,$($(section)_KEYS),; echo "  $($(section)_$(key)_TARGET)	- $($(sec
 
 	@echo
 	@echo "go helpers:"
+	@echo "  deps        - install dependencies"
+	@echo "  fmt         - run gofmt and goimports"
+	@echo "  tidy        - run go mod tidy"
 	@echo "  local       - add go.mod local GOPKG_KEYS replacements"
 	@echo "  unlocal     - remove go.mod local GOPKG_KEYS replacements"
 	@echo "  generate    - run go generate ./..."
@@ -179,6 +183,8 @@ install-autocomplete:
 	@echo "# installing ${BIN_NAME} bash_autocomplete to: ${AUTOCOMPLETE_FILE}"
 	@$(call __install_exe,${SRC_AUTOCOMPLETE_FILE},${AUTOCOMPLETE_FILE})
 
+deps: __deps
+
 tidy: __tidy
 
 be-update: __be_update
@@ -187,8 +193,14 @@ local: __local
 
 unlocal: __unlocal
 
-vet: __vet
+fmt: __fmt
+
+reportcard: __reportcard
 
 test: __test
+
+coverage: __coverage
+
+goconvey: __goconvey
 
 generate: __generate
