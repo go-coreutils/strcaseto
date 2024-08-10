@@ -23,7 +23,7 @@
 .PHONY: install-symlinks install-shortlinks install-caselinks
 
 BIN_NAME := strcaseto
-UNTAGGED_VERSION := v0.2.0
+UNTAGGED_VERSION := v0.2.1
 UNTAGGED_COMMIT := 0000000000
 
 SHELL := /bin/bash

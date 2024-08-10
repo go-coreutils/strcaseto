@@ -73,7 +73,7 @@ USAGE:
    echo "one-or-more-lines" | strcaseto.linux.arm64 [option]
 
 VERSION:
-   v0.2.0 (trunk)
+   v0.2.1 (trunk)
 
 DESCRIPTION:
    Convert command line arguments (or lines of os.Stdin) to a specific case.
