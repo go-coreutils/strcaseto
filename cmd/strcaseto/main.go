@@ -140,8 +140,7 @@ func main() {
 	}
 }
 
-func action(ctx *cli.Context, fn func(string) string) (err error) {
-	var inputs, outputs []string
+func parseActionInputs(ctx *cli.Context) (inputs []string) {
 	if ctx.Bool("help") {
 		cli.ShowAppHelpAndExit(ctx, 0)
 	} else if ctx.Bool("version") {
@@ -161,6 +160,12 @@ func action(ctx *cli.Context, fn func(string) string) (err error) {
 	} else {
 		cli.ShowAppHelpAndExit(ctx, 0)
 	}
+	return
+}
+
+func action(ctx *cli.Context, fn func(string) string) (err error) {
+	var outputs []string
+	inputs := parseActionInputs(ctx)
 
 	if fn != nil {
 		outputs = convert(fn, inputs...)
