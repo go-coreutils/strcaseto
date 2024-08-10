@@ -32,27 +32,6 @@ LOG_LEVEL := debug
 GO_ENJIN_PKG := nil
 BE_LOCAL_PATH := nil
 
-GOPKG_KEYS ?= CDK CTK CLD CLE CLN CLP
-
-CDK_GO_PACKAGE ?= github.com/go-curses/cdk
-CDK_LOCAL_PATH ?= ../cdk
-
-CTK_GO_PACKAGE ?= github.com/go-curses/ctk
-CTK_LOCAL_PATH ?= ../ctk
-
-CLD_GO_PACKAGE ?= github.com/go-curses/corelibs/diff
-CLD_LOCAL_PATH ?= ../corelibs/diff
-
-CLE_GO_PACKAGE ?= github.com/go-curses/corelibs/errors
-CLE_LOCAL_PATH ?= ../corelibs/errors
-
-CLN_GO_PACKAGE ?= github.com/go-curses/corelibs/notify
-CLN_LOCAL_PATH ?= ../corelibs/notify
-
-CLP_GO_PACKAGE ?= github.com/go-curses/corelibs/path
-CLP_LOCAL_PATH ?= ../corelibs/path
-
-
 CLEAN_FILES     ?= ${BIN_NAME} ${BIN_NAME}.*.* coverage.out pprof.*
 DISTCLEAN_FILES ?=
 REALCLEAN_FILES ?=
@@ -64,6 +43,8 @@ SYMLINKS_PREFIX ?= to-
 SYMLINKS_SUFFIX ?= -case
 
 SRC_CMD_PATH := ./cmd/strcaseto
+
+INSTALL_BIN_PATH ?= "${GOPATH}/bin"
 
 define help_custom_targets
 	@echo "  install-symlinks   - install to-{strcase}-case symlinks"
